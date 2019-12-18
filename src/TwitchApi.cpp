@@ -20,7 +20,7 @@
 
 #include "TwitchApi.h"
 
-TwitchApi::TwitchApi(Client &client, char *clientId)
+TwitchApi::TwitchApi(WiFiClientSecure &client, char *clientId)
 {
     this->client = &client;
     this->_clientId = clientId;
@@ -28,7 +28,7 @@ TwitchApi::TwitchApi(Client &client, char *clientId)
 
 bool TwitchApi::makeGetRequestWithClientId(char *command)
 {
-
+	//client->setInsecure();
     client->setTimeout(5000);
     if (!client->connect(TWITCH_HOST, portNumber))
     {
@@ -36,17 +36,25 @@ bool TwitchApi::makeGetRequestWithClientId(char *command)
         return false;
     }
 
-    //Serial.println(F("Connected!"));
+    Serial.println(F("TLS Connected!"));
 
-    // Default client doesnt have a verify, need to figure something else out.
-    // if (_checkFingerPrint && !client->verify(TWITCH_FINGERPRINT, TWITCH_HOST))
-    // {
-    //     Serial.println(F("certificate doesn't match"));
-    //     return false;
-    // }
+	
+	//TLS
+	if (client->verifyCertChain(TWITCH_HOST))
+	{
+		Serial.println("Server certificate verified");
+	} else {
+		Serial.println("ERROR: certificate verification failed!");
+		return false;
+	}
 
     // give the esp a breather
     yield();
+	
+	if (!client->connect(TWITCH_HOST, 443)){
+		Serial.println("Connection failed!");
+		return false;
+	}
 
     // Send HTTP request
     client->print(F("GET "));
@@ -176,7 +184,7 @@ FollowerData TwitchApi::getFollowerData(char *id)
     return follower;
 }
 
-StreamInfo TwitchApi::getStreamInfo(char *loginName)
+StreamInfo TwitchApi::getStreamInfo(const char *loginName)
 {
     char command[100] = "/helix/streams?user_login=";
     strcat(command, loginName);
