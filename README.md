@@ -15,5 +15,5 @@ If you are new the ESP8266, [check out this video](https://www.youtube.com/watch
 
 ## Edits
 
-Couldnt get the original code to connect, changed the code to use twitc.tv's root certificate, and got it working again. 
+Couldnt get the original code to connect, changed the code to use twitch.tv's root certificate, and got it working again. 
 Certificate expires 28. Jan 2028
