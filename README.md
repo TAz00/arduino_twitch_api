@@ -12,3 +12,8 @@ If you are new the ESP8266, [check out this video](https://www.youtube.com/watch
 - users (See userAndFollowerData example)
 - follower (For getting follower count)
 - stream (For getting live viewer count - See getStreamInfo)
+
+## Edits
+
+Couldnt get the original code to connect, changed the code to use twitc.tv's root certificate, and got it working again. 
+Certificate expires 28. Jan 2028
